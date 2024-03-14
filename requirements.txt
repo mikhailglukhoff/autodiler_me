@@ -1,0 +1,13 @@
+aiohttp==3.9.3
+aiosignal==1.3.1
+async-timeout==4.0.3
+asyncpg==0.29.0
+attrs==23.2.0
+beautifulsoup4==4.12.3
+charset-normalizer==3.3.2
+frozenlist==1.4.1
+idna==3.6
+multidict==6.0.5
+python-dotenv==1.0.1
+soupsieve==2.5
+yarl==1.9.4

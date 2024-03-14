@@ -59,90 +59,94 @@ async def find_ads_in_page(url):
 
 async def clean_parsed_data(page):
     clean_data = []
-
-    for item in page:
-        try:
-            ad_dict = {}
-
-            # clean id_ad
-            split_unique_id = item[0].split('-')
-            unique_id = split_unique_id[-1]
-            ad_dict.update({constants.psql_data['column_names'][0]: unique_id})
-
-            # detect paied ads
-            is_payed = item[1] == constants.is_payed
-            ad_dict.update({constants.psql_data['column_names'][1]: is_payed})
-
-            # split ad info
-            parts_of_head_info = [None, None, None]
-            split_info = item[2].split(' - ', 2)
-            for i, info in enumerate(split_info):
-                parts_of_head_info[i] = info
-            ad_dict.update({
-                constants.psql_data['column_names'][2]: parts_of_head_info[0],
-                constants.psql_data['column_names'][3]: parts_of_head_info[1],
-                constants.psql_data['column_names'][4]: parts_of_head_info[2]
-            })
-            # get mileage
-            mileage = ''.join(filter(str.isdigit, item[3]))
-            if mileage and mileage != '':  # Проверяем, что строка не пустая
-                try:
-                    mileage = int(mileage)
-                    ad_dict.update({constants.psql_data['column_names'][5]: mileage})
-                except ValueError:
-                    ad_dict.update({constants.psql_data['column_names'][5]: None})
-            else:
-                ad_dict.update({constants.psql_data['column_names'][5]: None})
-
-            # get year of manufacture
-            year = int(''.join(filter(str.isdigit, item[4])))
-            ad_dict.update({constants.psql_data['column_names'][6]: year})
-
-            # get fuel type
-            fuel = str(item[5].replace(':', '').strip())
-            ad_dict.update({constants.psql_data['column_names'][7]: fuel})
-
-            # get price
-            price = ''.join(filter(str.isdigit, item[6]))
-            if price and price != '':
-                try:
-                    price = int(price)
-                    ad_dict.update({constants.psql_data['column_names'][8]: price})
-                except ValueError:
-                    ad_dict.update({constants.psql_data['column_names'][8]: None})
-            else:
-                ad_dict.update({constants.psql_data['column_names'][8]: None})
-
-            # get location
-            location = str(item[7])
-            ad_dict.update({constants.psql_data['column_names'][9]: location})
-
-            # get publication date
-            date = str(item[8])
-            date_obj = None
+    if page is not None:
+        for item in page:
             try:
-                date_obj = datetime.strptime(date, "%d.%m.%y")
-            except ValueError:
-                date_split = date.split(' ', 2)
-                for mapping in constants.date_split_values:
-                    for key, values in mapping.items():
-                        if date_split[2] in values:
-                            if key == 'today':
-                                date_obj = datetime.now()
-                            elif key == 'yesterday':
-                                date_obj = datetime.now() - timedelta(days=1)
-                            elif key == 'few days before':
-                                days_before = int(date_split[1])
-                                date_obj = datetime.now() - timedelta(days=days_before)
+                ad_dict = {}
 
-            date_obj_format = date_obj.strftime("%Y-%m-%d")
-            date_formatted = datetime.strptime(date_obj_format, "%Y-%m-%d")
-            ad_dict.update({constants.psql_data['column_names'][10]: date_formatted})
+                # clean id_ad
+                split_unique_id = item[0].split('-')
+                unique_id = split_unique_id[-1]
+                ad_dict.update({constants.psql_data['column_names'][0]: unique_id})
 
-            clean_data.append(ad_dict)
-        except ValueError as e:
-            logging.error('ValueError in item %s: %s', item, e)
-    return clean_data
+                # detect paied ads
+                is_payed = item[1] == constants.is_payed
+                ad_dict.update({constants.psql_data['column_names'][1]: is_payed})
+
+                # split ad info
+                parts_of_head_info = [None, None, None]
+                split_info = item[2].split(' - ', 2)
+                for i, info in enumerate(split_info):
+                    parts_of_head_info[i] = info
+                ad_dict.update({
+                    constants.psql_data['column_names'][2]: parts_of_head_info[0],
+                    constants.psql_data['column_names'][3]: parts_of_head_info[1],
+                    constants.psql_data['column_names'][4]: parts_of_head_info[2]
+                })
+                # get mileage
+                mileage = ''.join(filter(str.isdigit, item[3]))
+                if mileage and mileage != '':  # Проверяем, что строка не пустая
+                    try:
+                        mileage = int(mileage)
+                        ad_dict.update({constants.psql_data['column_names'][5]: mileage})
+                    except ValueError:
+                        ad_dict.update({constants.psql_data['column_names'][5]: None})
+                else:
+                    ad_dict.update({constants.psql_data['column_names'][5]: None})
+
+                # get year of manufacture
+                year = int(''.join(filter(str.isdigit, item[4])))
+                ad_dict.update({constants.psql_data['column_names'][6]: year})
+
+                # get fuel type
+                fuel = str(item[5].replace(':', '').strip())
+                ad_dict.update({constants.psql_data['column_names'][7]: fuel})
+
+                # get price
+                price = ''.join(filter(str.isdigit, item[6]))
+                if price and price != '':
+                    try:
+                        price = int(price)
+                        ad_dict.update({constants.psql_data['column_names'][8]: price})
+                    except ValueError:
+                        ad_dict.update({constants.psql_data['column_names'][8]: None})
+                else:
+                    ad_dict.update({constants.psql_data['column_names'][8]: None})
+
+                # get location
+                location = str(item[7])
+                ad_dict.update({constants.psql_data['column_names'][9]: location})
+
+                # get publication date
+                date = str(item[8])
+                date_obj = None
+                try:
+                    date_obj = datetime.strptime(date, "%d.%m.%y")
+                except ValueError:
+                    date_split = date.split(' ', 2)
+                    for mapping in constants.date_split_values:
+                        for key, values in mapping.items():
+                            if date_split[2] in values:
+                                if key == 'today':
+                                    date_obj = datetime.now()
+                                elif key == 'yesterday':
+                                    date_obj = datetime.now() - timedelta(days=1)
+                                elif key == 'few days before':
+                                    days_before = int(date_split[1])
+                                    date_obj = datetime.now() - timedelta(days=days_before)
+
+                date_obj_format = date_obj.strftime("%Y-%m-%d")
+                date_formatted = datetime.strptime(date_obj_format, "%Y-%m-%d")
+                ad_dict.update({constants.psql_data['column_names'][10]: date_formatted})
+
+                clean_data.append(ad_dict)
+            except ValueError as e:
+                logging.error('ValueError in item %s: %s', item, e)
+            except AttributeError as e:
+                logging.error('Atrribute error in item %s: %s', item, e)
+        return clean_data
+    else:
+        return None
 
 
 async def upload_to_psql(clean_data):
