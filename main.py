@@ -25,6 +25,12 @@ async def main(page_number=1):
         await main(page_number)  # Повторно вызвать main с текущим номером страницы
         return
 
+    if page is None:
+        logging.error('Data is None. Retrying...', page_number)
+        await asyncio.sleep(5)
+        await main(page_number)
+        return
+
     if page is False:
         logging.error('No ads on page %s. Ending...', page_number)
         return  # Просто завершить выполнение функции main
@@ -59,5 +65,6 @@ async def main(page_number=1):
 
 
 asyncio.run(main())
+
 total_time = sum(iter_time_list) + sum(clean_time_list) + sum(sql_time_list)
 logging.info('Scraping process completed successfully in, sec: %s', round(total_time, 2))
