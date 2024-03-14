@@ -29,7 +29,7 @@ async def main(page_number=1):
         logging.error('Data is None. Retrying...', page_number)
         await asyncio.sleep(5)
         await main(page_number)
-        return
+        # return
 
     if page is False:
         logging.error('No ads on page %s. Ending...', page_number)
