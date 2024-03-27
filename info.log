@@ -1,0 +1,24 @@
+INFO:root:Processing page: 275
+INFO:root:AVG parsing time 2.55
+INFO:root:AVG cleaning time 0.003
+INFO:root:Connecting to the database...
+INFO:root:Data uploaded successfully.
+INFO:root:Database connection closed.
+INFO:root:AVG PostgreSQL time 1.21
+INFO:root:Processing page: 276
+INFO:root:AVG parsing time 2.39
+INFO:root:AVG cleaning time 0.002
+INFO:root:Connecting to the database...
+INFO:root:Data uploaded successfully.
+INFO:root:Database connection closed.
+INFO:root:AVG PostgreSQL time 1.17
+INFO:root:Processing page: 277
+INFO:root:AVG parsing time 2.78
+INFO:root:AVG cleaning time 0.002
+INFO:root:Connecting to the database...
+INFO:root:Data uploaded successfully.
+INFO:root:Database connection closed.
+INFO:root:AVG PostgreSQL time 1.16
+INFO:root:Processing page: 278
+ERROR:root:No ads on page 278. Ending...
+INFO:root:Scraping process completed successfully in, sec: 11.83

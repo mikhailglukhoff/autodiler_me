@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 from datetime import datetime, timedelta
@@ -8,9 +9,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
 import constants
 import queries
-
-
-# logging.basicConfig(filename='errors.log', level=logging.INFO)
 
 
 async def is_ad_available(soup):
@@ -176,8 +174,8 @@ async def upload_to_psql(clean_data):
              for ad in clean_data]
         )
         logging.info('Data uploaded successfully.')
-    except asyncpg.IdleSessionTimeoutError:
-        logging.error('Connection to database is timed out.')
+    except asyncio.exceptions.TimeoutError as e:
+        logging.error('Connection to database is timed out: %s', e)
     except asyncpg.PostgresError as e:
         logging.error('PSQL ERROR: %s', e)
     finally:

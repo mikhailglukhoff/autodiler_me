@@ -1,9 +1,8 @@
-import asyncio
 import time
 
 from functions import *
 
-logging.basicConfig(filename='errors.log', level=logging.INFO, filemode='w')
+logging.basicConfig(level=logging.INFO, filename='info.log', filemode='w')
 
 iter_time_list = []
 clean_time_list = []
@@ -20,13 +19,13 @@ async def main(page_number=1, retries=3):
         try:
             page = await find_ads_in_page(url)
             if page is not None:
-                break  # Если страница успешно загружена, прерываем цикл
+                break
         except asyncio.TimeoutError:
             logging.error('Timed out to fetch page %s. Retrying...', page_number)
         except Exception as e:
             logging.error('Error occurred while processing page %s: %s', page_number, e)
 
-        await asyncio.sleep(5)  # Подождать 5 секунд перед повторной попыткой
+        await asyncio.sleep(5)
 
     else:
         logging.error('Failed to fetch page %s after %d retries. Giving up...', page_number, retries)
